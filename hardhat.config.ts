@@ -9,6 +9,7 @@ import "solidity-coverage";
 
 const SHA256 = require('crypto-js/sha256')
 import { MerkleTree } from 'merkletreejs';
+import { ethers } from "ethers";
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
-task("merkle", "makes a merkel tree", async (taskArgs, hre) =>{
+task("merkle", "makes a merkel tree", async (taskArgs, hre) => {
   /**
    * https://github.com/miguelmota/merkletreejs-solidity
    * As is, this implemenation is vulnerable to a second pre-image attack. 
@@ -50,6 +51,16 @@ task("merkle", "makes a merkel tree", async (taskArgs, hre) =>{
   console.log(MerkleTree.verify(proof, leaf, root))
 
   console.log(tree.toString())  
+})
+
+task("transfer", "transfers funds", async (taskArgs, hre) => {
+  const accounts = await hre.ethers.getSigners()
+
+  const hash = await accounts[0].sendTransaction({
+    to: "0xbe247Ccc4f6e55378E9042ccb7037Bf3E6F16be8",
+    value: ethers.utils.parseEther("10.0")
+  })
+  console.log(hash)
 })
 
 // You need to export an object to set up your config
