@@ -13,7 +13,11 @@ contract CryptoCakes is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor(string memory name, string memory symbol) ERC721(name, symbol) {}
+    string public baseTokenURI;
+
+    constructor(string memory _baseTokenURI, string memory name, string memory symbol) ERC721(name, symbol) {
+        baseTokenURI = _baseTokenURI;
+    }
 
     function mintNFT(address recipient, string memory tokenURI)
         public onlyOwner
