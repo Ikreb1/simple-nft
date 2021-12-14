@@ -1,5 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 describe("Greeter", function () {
   it("Should return the new greeting once it's changed", async function () {
@@ -22,7 +24,7 @@ describe("CryptoCakes", function () {
   it("Should return the right name and symbol", async function () {
     const accounts = await ethers.getSigners();
     const CryptoCakes = await ethers.getContractFactory("CryptoCakes");
-    const cryptoCakes = await CryptoCakes.deploy("CryptoCakes", "CC");
+    const cryptoCakes = await CryptoCakes.deploy(process.env.NFT_URL, "CryptoCakes", "CC");
     await cryptoCakes.deployed();
 
     //const deployedCC = await CryptoCakes.attach(cryptoCakes.address);
