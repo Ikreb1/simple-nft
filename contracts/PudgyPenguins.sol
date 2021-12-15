@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 
 contract PudgyPenguins is ERC721Enumerable, Ownable, ERC721Burnable, ERC721Pausable {
-    using SafeMath for uint256;
+    using SafeMath for uint256; // not needed
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdTracker;

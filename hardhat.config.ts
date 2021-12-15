@@ -6,10 +6,14 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import "hardhat-contract-sizer";
 
 const SHA256 = require('crypto-js/sha256')
 import { MerkleTree } from 'merkletreejs';
 import { ethers } from "ethers";
+import Web3 from "web3";
+
+const web3 = new Web3(Web3.givenProvider);
 
 dotenv.config();
 
@@ -22,6 +26,22 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     console.log(account.address);
   }
 });
+
+task("capturetheether", "abc", async (taskArgs, hre) => {
+  const bruteForceHash = (range: number, targetHash: string) => {
+    for (let i = 0; i < range; i++) {
+      const hash = ethers.utils.keccak256([i]);
+      if (targetHash.includes(hash)) return i;
+    }
+    throw new Error(`No hash found within range ${range}`);
+  };
+  console.log("hello")
+
+  console.log(bruteForceHash(2 ** 8, `0xdb81b4d58595fbbbb592d3661a34cdca14d7ab379441400cbfa1b78bc447c365`))
+
+  const txHash = "0x43b5ea0F8479512b88CeF600f707643CfeFF84b1"
+  
+})
 
 task("merkle", "makes a merkel tree", async (taskArgs, hre) => {
   /**
