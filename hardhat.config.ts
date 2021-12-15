@@ -87,7 +87,15 @@ task("transfer", "transfers funds", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: { // default: false and 200
+        enabled: true,
+        runs: 200,
+      }
+    }
+  },
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
