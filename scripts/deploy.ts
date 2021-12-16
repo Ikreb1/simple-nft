@@ -35,6 +35,12 @@ async function main() {
   await cryptoCakes.deployed();
 
   console.log("cryptoCakes deployed to:", cryptoCakes.address);
+
+  const NuclearNerds = await ethers.getContractFactory("NuclearNerds");
+  const nuclearNerds = await NuclearNerds.deploy(process.env.NFT_URL, deployer.address, deployer.address);
+  await nuclearNerds.deployed();
+
+  console.log("NuclearNerds deployed to:", nuclearNerds.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
