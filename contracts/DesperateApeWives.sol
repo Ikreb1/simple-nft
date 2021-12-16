@@ -242,7 +242,7 @@ contract DesperateApeWives is Ownable, ERC721Enumerable, PaymentSplitter {
 }
 
     // helper
-
+    // can also just use open zeppelins address.sol which implements isContract 
     // EXTCODESIZE returns 0 if it is called from the constructor of a contract. 
     // So if you are using this in a security sensitive setting, you would have 
     // to consider if this is a problem.
