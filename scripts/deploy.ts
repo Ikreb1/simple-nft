@@ -8,43 +8,34 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+async function deploymentScript(contractName: string, ...payload: any[]) {
+  const Contract = await ethers.getContractFactory(contractName)
+  const contract = await Contract.deploy(...payload)
+  
+  await contract.deployed()
+  console.log(`${contractName} deployed to: ${contract.address}`);
+
+  return contract.address;
+}
+
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
-  //
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
   const [deployer] = await ethers.getSigners();
 
   console.log("Deploying contracts with the account:", deployer.address);
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const greeterAddress = await deploymentScript("Greeter", "Hello, Hardhat!")
 
-  await greeter.deployed();
+  const cryptoCakesAddress = await deploymentScript("CryptoCakes", process.env.NFT_URL , "CryptoCakes", "CC")
 
-  console.log("Greeter deployed to:", greeter.address);
-
-  const CryptoCakes = await ethers.getContractFactory("CryptoCakes");
-  const cryptoCakes = await CryptoCakes.deploy(process.env.NFT_URL , "CryptoCakes", "CC");
-  await cryptoCakes.deployed();
-
-  console.log("cryptoCakes deployed to:", cryptoCakes.address);
-
-  const NuclearNerds = await ethers.getContractFactory("NuclearNerds");
-  const nuclearNerds = await NuclearNerds.deploy(process.env.NFT_URL, deployer.address, deployer.address);
-  await nuclearNerds.deployed();
-
-  console.log("NuclearNerds deployed to:", nuclearNerds.address);
+  const nuclearNerdsAddress = await deploymentScript("NuclearNerds", process.env.NFT_URL, deployer.address, deployer.address)
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
