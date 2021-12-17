@@ -61,6 +61,7 @@ pragma solidity ^0.8.7;
  * Founded By: @dc & @hotshave
  * Developed By: @nftchance & @masonnft
  * Optimization assistance credits: @squeebo_nft
+ * https://etherscan.io/address/0x0f78c6eee3c89ff37fd9ef96bd685830993636f2#code
  */
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";

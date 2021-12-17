@@ -5,18 +5,9 @@
 // Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
 import * as dotenv from "dotenv";
+import { deploymentScript } from "./helpers";
 
 dotenv.config();
-
-async function deploymentScript(contractName: string, ...payload: any[]) {
-  const Contract = await ethers.getContractFactory(contractName)
-  const contract = await Contract.deploy(...payload)
-  
-  await contract.deployed()
-  console.log(`${contractName} deployed to: ${contract.address}`);
-
-  return contract.address;
-}
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -29,11 +20,11 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const greeterAddress = await deploymentScript("Greeter", "Hello, Hardhat!")
+  const greeter = await deploymentScript("Greeter", "Hello, Hardhat!")
 
-  const cryptoCakesAddress = await deploymentScript("CryptoCakes", process.env.NFT_URL , "CryptoCakes", "CC")
+  const cryptoCakes = await deploymentScript("CryptoCakes", process.env.NFT_URL , "CryptoCakes", "CC")
 
-  const nuclearNerdsAddress = await deploymentScript("NuclearNerds", process.env.NFT_URL, deployer.address, deployer.address)
+  const nuclearNerds = await deploymentScript("NuclearNerds", process.env.NFT_URL, deployer.address, deployer.address)
 }
 
 main().catch((error) => {
