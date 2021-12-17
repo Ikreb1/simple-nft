@@ -8,7 +8,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 
-const SHA256 = require('crypto-js/sha256')
+const KECCAK256 = require('keccak256')
 import { MerkleTree } from 'merkletreejs';
 import { ethers } from "ethers";
 import Web3 from "web3";
@@ -63,10 +63,10 @@ task("merkle", "makes a merkel tree", async (taskArgs, hre) => {
     count++
   }
   
-  const leaves = accounts.map(x => SHA256(x.address));
-  const tree = new MerkleTree(leaves, SHA256)
+  const leaves = accounts.map(x => KECCAK256(x.address));
+  const tree = new MerkleTree(leaves, KECCAK256)
   const root = tree.getRoot().toString('hex')
-  const leaf = SHA256(accounts[0].address)
+  const leaf = KECCAK256(accounts[0].address)
   const proof = tree.getProof(leaf)
   console.log(MerkleTree.verify(proof, leaf, root))
 
