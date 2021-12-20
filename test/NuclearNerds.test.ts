@@ -2,9 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { deploymentScript } from "../scripts/helpers";
 
-//const { keccak256, bufferToHex } = require('ethereumjs-util');
 const keccak256 = require('keccak256')
-//const { MerkleTree } = require('./helpers/merkleTree');
 const { MerkleTree } = require('merkletreejs')
 
 
@@ -15,10 +13,10 @@ describe("NuclearNerds", function() {
     const allowance = 3
     const whitelistMembers = Array.from({length: 8}, (x, i) => accounts[i].address)
 
-    const leaves = whitelistMembers.map(x => keccak256(x + `${allowance}`))
+    const leaves = whitelistMembers.map(address => keccak256(address + `${allowance}${allowance}`))
     const tree = new MerkleTree(leaves, keccak256, { sort: true })
     const root = tree.getHexRoot()
-    const leaf = keccak256(whitelistMembers[0] + `${allowance}`)
+    const leaf = keccak256(whitelistMembers[0] + `${allowance}${allowance}`)
     const proof = tree.getHexProof(leaf)
     
     const team = Array.from({length: 2}, (x, i) => accounts[i + 3].address)
