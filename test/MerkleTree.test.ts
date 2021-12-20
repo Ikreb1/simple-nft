@@ -60,7 +60,7 @@ describe("MerkleTest", function() {
     console.log()
 
     console.log("Lets try and hash it with keccak256")
-    console.log("SL " + await simpleMerkleTree.dump(allowance))
+    console.log("SL " + await simpleMerkleTree.testSolidityKeccack(allowance))
     console.log("JS " + "0x" + keccak256(deployer + makeStupidSignedString(allowance)).toString('hex'))
     console.log("hashing looks good")
     console.log()

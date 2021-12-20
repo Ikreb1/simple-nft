@@ -51,13 +51,13 @@ contract SimpleMerkleTree {
         return true;
     }
 
-    function packValues(string memory allowance, string memory payload) public pure returns (bytes memory) {
-        return abi.encodePacked(payload, allowance);
-    }
-
-    function dump(uint256 allowance) external view returns (bytes32) {
+    function testSolidityKeccack(uint256 allowance) external view returns (bytes32) {
         string memory payload = string(abi.encodePacked(msg.sender));
         return _nnLeaf(Strings.toString(allowance), payload);
+    }
+
+    function packValues(string memory allowance, string memory payload) public pure returns (bytes memory) {
+        return abi.encodePacked(payload, allowance);
     }
 
     function replica(uint256 allowance) external view returns (bytes memory) {
