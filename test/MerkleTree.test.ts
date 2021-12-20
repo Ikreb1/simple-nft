@@ -9,8 +9,22 @@ const encode = ethers.utils.solidityPack
 
 //it.only() to only run this test
 describe("MerkleTest", function() {
-  it("See if account can be verified", async function() {
+  it.only("See if account can be verified", async function() {
+
+    // needs to add because the address is converted to string with 0x infront making it 42 hex values not 40
+    // and I guess encodPacked one intializes 
+    function makeStupidSignedString(number: number) {
+        const stringNumber = number.toString()
+        let finalString = ""
+        for(const i of stringNumber)
+        {
+            finalString += "3" + i
+        }
+        return finalString
+    }
+
     const accounts = await ethers.getSigners()
+    const allowance = 50
     const deployer = accounts[0].address
     const whitelistMembers = Array.from({length: 8}, (x, i) => accounts[i].address)
 
@@ -33,21 +47,21 @@ describe("MerkleTest", function() {
     console.log()
 
     console.log("can we replicate abi.encodePacked(string memory payload, string memory allowance)?")
-    console.log("SL " + await simpleMerkleTree.packValues("3", deployer)) //same
-    console.log("JS " + encode(["string", "string"], [deployer, "3"])) //same
+    console.log("SL " + await simpleMerkleTree.packValues(makeStupidSignedString(allowance), deployer)) //same
+    console.log("JS " + encode(["string", "string"], [deployer, makeStupidSignedString(allowance)])) //same
     console.log()
 
     console.log("A more realistic version that converts the int to strings etc.")
-    console.log("SL " + await simpleMerkleTree.replica(3))
-    console.log("JS " + encode(["string", "string"], [deployer, "3"]))
-    console.log("JS " + deployer + "3")
-    console.log("JS " + deployer + "33")
-    console.log("extra 3 fixes the issue when converting the 3 to a string -_-")
+    console.log("SL " + await simpleMerkleTree.replica(allowance))
+    console.log("JS " + deployer + makeStupidSignedString(allowance))
+    console.log("JS " + deployer + makeStupidSignedString(allowance) + " add hardcoded 3 infront of each number in ")
+    console.log("JS " + encode(["string", "string"], [deployer, makeStupidSignedString(allowance)]) + " what I though would work")
+    console.log(`adding binary 11 infront of each number in numbers makes it work the same as encodePacked() -_-`)
     console.log()
 
     console.log("Lets try and hash it with keccak256")
-    console.log("SL " + await simpleMerkleTree.dump(3))
-    console.log("JS " + "0x" + keccak256(deployer + "33").toString('hex'))
+    console.log("SL " + await simpleMerkleTree.dump(allowance))
+    console.log("JS " + "0x" + keccak256(deployer + makeStupidSignedString(allowance)).toString('hex'))
     console.log("hashing looks good")
     console.log()
     
@@ -59,14 +73,16 @@ describe("MerkleTest", function() {
 
 
     // what you would actually need to replicated NuclearNerds merkletree with address and allowance
-    const nnLeaves = whitelistMembers.map(address => keccak256(address + "33"))
+    const nnLeaves = whitelistMembers.map(address => keccak256(address + makeStupidSignedString(allowance)))
     const nnTree = new MerkleTree(nnLeaves, keccak256, { sort: true })
     const nnRoot = nnTree.getHexRoot()
-    const nnLeaf = keccak256(deployer + "33")
+    const nnLeaf = keccak256(deployer + makeStupidSignedString(allowance))
     const nnProof = nnTree.getHexProof(nnLeaf)
 
     await simpleMerkleTree.setMerkleRoot(nnRoot)
 
-    expect(await simpleMerkleTree.nnVerify(10, 3, nnProof)).to.equal(true)
+    expect(await simpleMerkleTree.nnVerify(10, allowance, nnProof)).to.equal(true)
+
+    console.log(await simpleMerkleTree.toStringTest(3))
   });
 });

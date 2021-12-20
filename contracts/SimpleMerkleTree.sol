@@ -68,4 +68,8 @@ contract SimpleMerkleTree {
     function _msgSender() external view returns (address) {
         return msg.sender;
     }
+
+    function toStringTest(uint256 number) external pure returns (string memory) {
+        return Strings.toString(number);
+    } 
 }
