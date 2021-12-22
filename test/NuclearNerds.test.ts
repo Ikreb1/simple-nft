@@ -8,15 +8,25 @@ const { MerkleTree } = require('merkletreejs')
 
 describe("NuclearNerds", function() {
   it("NuclearNerds unit test", async function() {
+    function hexifyNumberAsString(number: number) {
+      const stringNumber = number.toString()
+      let finalString = ""
+      for(const i of stringNumber)
+      {
+          finalString += "3" + i
+      }
+      return finalString
+  }
     const accounts = await ethers.getSigners()
+    const deployer = accounts[0].address
 
-    const allowance = 3
+    const allowance = 4
     const whitelistMembers = Array.from({length: 8}, (x, i) => accounts[i].address)
 
-    const leaves = whitelistMembers.map(address => keccak256(address + `${allowance}${allowance}`))
+    const leaves = whitelistMembers.map(address => keccak256(address + hexifyNumberAsString(allowance)))
     const tree = new MerkleTree(leaves, keccak256, { sort: true })
     const root = tree.getHexRoot()
-    const leaf = keccak256(whitelistMembers[0] + `${allowance}${allowance}`)
+    const leaf = keccak256(whitelistMembers[0] + hexifyNumberAsString(allowance))
     const proof = tree.getHexProof(leaf)
     
     const team = Array.from({length: 2}, (x, i) => accounts[i + 3].address)
@@ -44,9 +54,20 @@ describe("NuclearNerds", function() {
 
     await nuclearNerds.setWhitelistMerkleRoot(root)
 
-    await nuclearNerds.whitelistMint(1, 3, proof)
+    await nuclearNerds.whitelistMint(1, allowance, proof, {
+      value: ethers.utils.parseEther("0.069")
+    })
+    await nuclearNerds.whitelistMint(2, allowance, proof, {
+      value: ethers.utils.parseEther("0.138")
+    })
+
+    await nuclearNerds.tokenURI(1)
 
     await nuclearNerds.togglePublicSale(8888)
+
+    await nuclearNerds.whitelistMint(1, allowance, proof, {
+      value: ethers.utils.parseEther("0.069")
+    })
     
   });
 });
